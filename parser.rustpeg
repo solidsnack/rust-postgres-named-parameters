@@ -1,0 +1,46 @@
+use token::*;
+
+#[pub]
+stuff -> Vec<Pos>
+    = stuffs:(delimited_stuff)* { stuffs }
+
+delimited_stuff -> Pos
+   = start:#position
+     stuff:(plain_stuff / quoted_stuff / comment_stuff / variable_stuff)
+     end:#position
+     { Pos { start: start, end: end, token: stuff } }
+
+plain_stuff -> Token
+    = plain { Text }
+
+quoted_stuff -> Token
+    = (single_quoted / double_quoted) { Text }
+
+comment_stuff -> Token
+    = line_comment { Text }                         // TODO: Multiline comment?
+
+
+#[pub]
+/// A variable reference.
+variable_stuff -> Token
+    = "{" whitespace* ref:"&"? whitespace* var:name whitespace* "}"
+      {
+          let mode = if ref.is_some() { Identifier } else { Parameter }
+          Expansion(mode, var.into())
+      }
+
+
+line_comment = "--" [^\n]*
+
+plain = [^}{'\"]+
+
+single_quoted = "'" ([^'\n] / "''")* "'"
+
+double_quoted = "\"" ([^\"\n] / "\\\"")* "\""
+
+/// Simple names.
+name -> &'input str
+    = s:$([a-z] [a-zA-Z0-9_]*) { s }
+
+whitespace = [ \t\n\r]
+

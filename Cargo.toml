@@ -1,0 +1,21 @@
+[package]
+name = "postgres-named-parameters"
+version = "0.1.0"
+authors = ["Jason Dusek <jason.dusek@gmail.com>"]
+build = "build.rs"
+readme = "README.md"
+license = "Apache-2.0/MIT"
+homepage = "https://gitlab.com/solidsnack/postgres-named-parameters/"
+repository = "https://gitlab.com/solidsnack/postgres-named-parameters.git"
+documentation = "https://docs.rs/postgres-named-parameters"
+description = "Provides named parameter support for Postgres queries"
+
+[features]
+# Regenerates parser from grammar.
+codegen = ["peg"]
+
+[dependencies]
+error-chain = "*"
+
+[build-dependencies]
+peg = { version = "^0.4", optional = true }
