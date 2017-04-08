@@ -1,8 +1,8 @@
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Pos {
-    token: Token,
-    start: usize,
-    end: usize,
+    pub token: Token,
+    pub start: usize,
+    pub end: usize,
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
