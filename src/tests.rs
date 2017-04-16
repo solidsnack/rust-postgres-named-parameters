@@ -35,8 +35,8 @@ fn parameter_in_context() {
     let text = "SELECT {t} AT TIME ZONE 'UTC'";
     let offsets = (7, 10);
     let parsed = peg::stuff(text).unwrap();
-    for Pos { token, start, end } in parsed {
-        if let Expansion(mode, name) = token {
+    for Token { interpretation, start, end } in parsed {
+        if let Expansion(mode, name) = interpretation {
             assert!(mode == Parameter);
             assert!(name == parameter_name);
             assert!(offsets == (start, end));

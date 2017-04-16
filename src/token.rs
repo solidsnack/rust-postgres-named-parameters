@@ -1,17 +1,24 @@
+
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
-pub struct Pos {
-    pub token: Token,
-    pub start: usize,
-    pub end: usize,
+pub struct Token2 {
+    pub text: String,
+    pub interpretation: Interpretation,
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
-pub enum Token {
+pub struct Token {
+    pub start: usize,
+    pub end: usize,
+    pub interpretation: Interpretation,
+}
+
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+pub enum Interpretation {
     Text,
     Expansion(Mode, String),
 }
 
-pub use self::Token::*;
+pub use self::Interpretation::*;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum Mode {
