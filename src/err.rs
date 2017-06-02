@@ -2,7 +2,7 @@ use std::error;
 use std::fmt;
 use std::result;
 
-// use postgres;
+use postgres;
 
 
 pub type Result<T> = result::Result<T, Err>;
@@ -14,10 +14,11 @@ pub enum Err {
     ImpossibleError,
     MissingBinding(String),
     ModeMismatch(String),
-    ParseError(String), // PostgresError(postgres::error::Error),
+    ParseError(String),
+    PostgresError(postgres::error::Error),
 }
 
-pub use self::Err::*;
+use self::Err::*;
 
 impl fmt::Display for Err {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -33,7 +34,7 @@ impl error::Error for Err {
             MissingBinding(ref s) => &s,
             ModeMismatch(ref s) => &s,
             ParseError(ref s) => &s,
-            // PostgresError(_) => "Postgres error.",
+            PostgresError(_) => "Postgres error.",
         }
     }
 }
