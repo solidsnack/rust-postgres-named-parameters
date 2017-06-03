@@ -59,6 +59,9 @@ mod tests {
     #[test]
     fn plain() {
         assert!("x" == optionally_quote("x"));
-        assert!("\":\"" == optionally_quote(":"));
+        assert!("\"simple\"" == quote("simple"));
+        assert!("\"quote: \"\"a word\"\"\"" == quote("quote: \"a word\""));
+        assert!(quote(":") == optionally_quote(":"));
+        assert!(quote("table") == optionally_quote("table"));
     }
 }
