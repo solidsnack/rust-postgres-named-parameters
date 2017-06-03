@@ -3,6 +3,8 @@ use std::iter::FromIterator;
 
 
 // NB: See quote_identifier in https://doxygen.postgresql.org/ruleutils_8c.html
+// Note the absence of any reference to a connection and the "ASCII-only"
+// character of the algorithm.
 pub fn optionally_quote(s: &str) -> String {
     let mut chars = s.chars();
 
