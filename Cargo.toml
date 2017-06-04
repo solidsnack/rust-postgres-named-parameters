@@ -16,7 +16,11 @@ codegen = ["peg"]
 
 [dependencies]
 error-chain = "*"
+ordermap = "*"
 postgres = "*"
+
+[dev-dependencies]
+stderr = "*"
 
 [build-dependencies]
 peg = { version = "^0.5", optional = true }

@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use postgres::types::ToSql;
 
 use err::*;
+use parse::Span;
 use quote;
 use token::*;
 
@@ -11,8 +12,7 @@ use token::*;
 /// being passed to Postgres.
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Template {
-    pub text: String,
-    pub tokens: Vec<Token>,
+    pub spans: Vec<Span>,
     pub parameters: Vec<String>,
     pub identifiers: Vec<String>,
 }
@@ -22,8 +22,8 @@ impl Template {
                   identifiers: HashMap<String, String>)
                   -> Result<Query> {
         let mut strings = Vec::default();
-        for token in &self.tokens {
-            let s: String = match token.interpretation {
+        for span in &self.spans {
+            let s = match span.interpretation {
                 Expansion(Identifier, ref ident) => {
                     identifiers.get(ident).map(optionally_quote)
                                .ok_or(MissingBinding(ident.clone()))?
@@ -32,7 +32,7 @@ impl Template {
                 Expansion(Parameter, ref p) => {
                     format!("${}", self.param_id(&p)?)
                 }
-                _ => (&self.text[token.start..token.end]).into(),
+                _ => span.text.clone(),
             };
             strings.push(s);
         }
@@ -40,6 +40,12 @@ impl Template {
                text: strings.join(""),
                parameters: self.parameters.clone(),
            })
+    }
+
+    pub fn text(&self) -> String {
+        let strings: Vec<String> =
+            self.spans.iter().map(|s| s.text.clone()).collect();
+        strings.join("")
     }
 
     fn param_id(&self, name: &str) -> Result<usize> {
