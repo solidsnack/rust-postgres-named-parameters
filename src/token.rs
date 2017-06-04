@@ -1,9 +1,4 @@
-
-#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
-pub struct Token2 {
-    pub text: String,
-    pub interpretation: Interpretation,
-}
+use std::fmt;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Token {
@@ -16,6 +11,15 @@ pub struct Token {
 pub enum Interpretation {
     Text,
     Expansion(Mode, String),
+}
+
+impl fmt::Display for Interpretation {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            &Expansion(ref mode, ref name) => write!(f, "{:?}/{}", mode, name),
+            _ => write!(f, "{:?}", self),
+        }
+    }
 }
 
 pub use self::Interpretation::*;

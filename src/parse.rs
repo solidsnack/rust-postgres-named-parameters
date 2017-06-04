@@ -1,3 +1,5 @@
+use std::fmt;
+
 use ordermap::OrderMap;
 
 use err::*;
@@ -28,8 +30,16 @@ pub fn parse(text: &str) -> Result<Template> {
     }
     Ok(Template {
            spans: spans,
-           parameters: parameters.keys().map(|s| s.clone()).collect(),
-           identifiers: identifiers.keys().map(|s| s.clone()).collect(),
+           parameters: parameters.keys()
+                                 .map(|s| {
+                                          s.clone()
+                                      })
+                                 .collect(),
+           identifiers: identifiers.keys()
+                                   .map(|s| {
+                                            s.clone()
+                                        })
+                                   .collect(),
        })
 }
 
@@ -37,5 +47,11 @@ pub fn parse(text: &str) -> Result<Template> {
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Span {
     pub text: String,
-    pub interpretation: Interpretation
+    pub interpretation: Interpretation,
+}
+
+impl fmt::Display for Span {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?} ({})", self.text, self.interpretation)
+    }
 }

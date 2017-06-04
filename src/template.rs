@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt;
 
 use postgres::types::ToSql;
 
@@ -86,6 +87,16 @@ impl Query {
     }
 }
 
+impl fmt::Display for Query {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut params = Vec::default();
+        for (i, parameter) in self.parameters.iter().enumerate() {
+            params.push(format!("${} = {}", i + 1, parameter));
+        }
+        write!(f, "{}\n--- {}", self.text, params.join(", "))
+    }
+}
+
 
 /// A query which has all parameters bound.
 #[derive(Clone, Debug)]
@@ -93,6 +104,21 @@ pub struct BoundQuery<'values> {
     pub text: String,
     pub parameters: Vec<String>,
     pub values: Vec<&'values ToSql>,
+}
+
+impl<'values> fmt::Display for BoundQuery<'values> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut params = Vec::default();
+        let zipper = self.parameters
+                         .iter()
+                         .zip(self.values.iter())
+                         .enumerate();
+        for (i, (parameter, value)) in zipper {
+            params.push(format!("${} = {} = {:?}", i + 1, parameter, value));
+
+        }
+        write!(f, "{}\n--- {}", self.text, params.join("\n--- "))
+    }
 }
 
 
