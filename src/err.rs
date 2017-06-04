@@ -1,40 +1,23 @@
-use std::error;
-use std::fmt;
-use std::result;
-
 use postgres;
 
+use peg;
 
-pub type Result<T> = result::Result<T, Err>;
 
-
-#[derive(Debug)]
-pub enum Err {
-    ConflictingBinding(String),
-    ImpossibleError,
-    MissingBinding(String),
-    ModeMismatch(String),
-    ParseError(String),
-    PostgresError(postgres::error::Error),
-}
-
-use self::Err::*;
-
-impl fmt::Display for Err {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Err: {:?}", self)
+error_chain! {
+    foreign_links {
+        PGErr(postgres::error::Error);
+        ParseErr(peg::ParseError);
     }
-}
 
-impl error::Error for Err {
-    fn description(&self) -> &str {
-        match *self {
-            ConflictingBinding(ref s) => &s,
-            ImpossibleError => "The impossible has occurred!",
-            MissingBinding(ref s) => &s,
-            ModeMismatch(ref s) => &s,
-            ParseError(ref s) => &s,
-            PostgresError(_) => "Postgres error.",
+    // Define additional `ErrorKind` variants. The syntax here is
+    // the same as `quick_error!`, but the `from()` and `cause()`
+    // syntax is not supported.
+    errors {
+        ConflictingBinding(variable: String)
+        ImpossibleError {
+            description("The impossible has occurred!")
         }
+        MissingBinding(variable: String)
+        ModeMismatch(reference: String)
     }
 }
