@@ -21,3 +21,6 @@ error_chain! {
         ModeMismatch(reference: String)
     }
 }
+
+
+pub use self::ErrorKind::*;

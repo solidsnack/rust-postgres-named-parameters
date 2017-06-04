@@ -2,8 +2,7 @@ use std::collections::HashMap;
 
 use postgres::types::ToSql;
 
-use err::ErrorKind::*;
-use err::Result;
+use err::*;
 use quote;
 use token::*;
 
