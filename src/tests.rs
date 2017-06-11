@@ -45,3 +45,16 @@ fn parameter_in_context() {
     }
     assert!(false, "Failed to parse a parameter in simple query.");
 }
+
+#[test]
+fn useful_errors() {
+    let text = "SELECT count(*)\n WHERE t > {error AND width IS NOT NULL";
+    let parsed = peg::stuff(text);
+    if let Err(e) = parsed {
+        // Error should be just following where it says "error" above.
+        assert!(e.line == 2);
+        assert!(e.column == 19);
+        return;
+    }
+    assert!(false, "Parser should error out and didn't.");
+}
